@@ -1,12 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function Question({ question, onAnswered }) {
   const [timeRemaining, setTimeRemaining] = useState(10);
 
-  // add useEffect code
+  useEffect(() => {
+    // Set up the timer to decrement `timeRemaining` every second
+    const timerId = setTimeout(() => {
+      setTimeRemaining((prevTime) => prevTime - 1);
+    }, 1000);
+
+    // When `timeRemaining` hits 0, reset it and trigger `onAnswered(false)`
+    if (timeRemaining === 0) {
+      setTimeRemaining(10); // Reset the timer
+      onAnswered(false); // Trigger incorrect answer
+    }
+
+    // Cleanup function to clear the timeout
+    return () => clearTimeout(timerId);
+  }, [timeRemaining, onAnswered]);
 
   function handleAnswer(isCorrect) {
-    setTimeRemaining(10);
+    setTimeRemaining(10); // Reset the timer on answer selection
     onAnswered(isCorrect);
   }
 
